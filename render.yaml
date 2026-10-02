@@ -1,4 +1,4 @@
-# Démo avec le parcours Kafka original. Le service Kafka privé et son disque sont payants.
+# Démo Render gratuite : deux API web, un site statique et PostgreSQL.
 databases:
   - name: sama-wallet-db
     plan: free
@@ -6,17 +6,6 @@ databases:
     user: sama_wallet
     region: frankfurt
 services:
-  - type: pserv
-    name: sama-wallet-kafka
-    runtime: docker
-    plan: 0.5c-512mb
-    region: frankfurt
-    dockerfilePath: deploy/render-kafka.Dockerfile
-    dockerContext: .
-    disk:
-      name: kafka-data
-      mountPath: /var/lib/kafka/data
-      sizeGB: 1
   - type: web
     name: sama-wallet-api
     runtime: docker
@@ -38,10 +27,10 @@ services:
         fromDatabase: {name: sama-wallet-db, property: password}
       - key: APP_JWT_SECRET
         generateValue: true
-      - key: SPRING_KAFKA_BOOTSTRAP_SERVERS
-        fromService: {name: sama-wallet-kafka, type: pserv, property: hostport}
+      - key: APP_KAFKA_ENABLED
+        value: 'false'
       - key: APP_CORS_ORIGINS
-        fromService: {name: sama-wallet-mobile, type: web, envVarKey: RENDER_EXTERNAL_URL}
+        value: https://sama-wallet-mobile*.onrender.com
   - type: web
     name: sama-prestations-api
     runtime: docker
@@ -65,10 +54,10 @@ services:
         fromService: {name: sama-wallet-api, type: web, envVarKey: APP_JWT_SECRET}
       - key: APP_WALLET_BASE_URL
         fromService: {name: sama-wallet-api, type: web, envVarKey: RENDER_EXTERNAL_URL}
-      - key: SPRING_KAFKA_BOOTSTRAP_SERVERS
-        fromService: {name: sama-wallet-kafka, type: pserv, property: hostport}
+      - key: APP_KAFKA_ENABLED
+        value: 'false'
       - key: APP_CORS_ORIGINS
-        fromService: {name: sama-wallet-mobile, type: web, envVarKey: RENDER_EXTERNAL_URL}
+        value: https://sama-wallet-mobile*.onrender.com
   - type: web
     name: sama-wallet-mobile
     runtime: static

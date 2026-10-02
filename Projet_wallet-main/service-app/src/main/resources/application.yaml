@@ -25,6 +25,8 @@ spring:
       enable-auto-commit: false
 
 app:
+  kafka:
+    enabled: ${APP_KAFKA_ENABLED:true}
   jwt:
     secret: ${APP_JWT_SECRET:changez-cette-cle-secrete-en-production-min-256-bits}
   wallet:
