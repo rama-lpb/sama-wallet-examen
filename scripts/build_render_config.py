@@ -3,7 +3,7 @@
 import json
 import os
 from pathlib import Path
-out = Path(__file__).resolve().parents[1] / 'deploy/render-web'
+out = Path(os.environ.get('RENDER_WEB_DIR') or Path(__file__).resolve().parents[1] / 'deploy/render-web')
 if not (out / 'index.html').exists():
     raise SystemExit('deploy/render-web est absent : lancer scripts/prepare-render-web.sh')
 wallet = os.environ.get('WALLET_PUBLIC_URL', '').rstrip('/')

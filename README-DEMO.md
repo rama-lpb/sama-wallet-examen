@@ -25,7 +25,7 @@ Dans Render : **New → Blueprint**, choisir le dépôt et sa branche, laisser `
 
 Pour vérifier : ouvrir le site, créer un compte avec un numéro de démonstration, récupérer l'OTP dans les **logs de `sama-wallet-api`**, faire un dépôt fictif, créer puis payer une prestation, vérifier que son statut devient « Payée ». Le compte local `+221778080432` n'existe pas dans la nouvelle base Render tant qu'il n'y est pas recréé.
 
-**Limites de l'offre gratuite Render :** un seul PostgreSQL gratuit par espace, expiration de cette base après 30 jours, mise en veille des services web gratuits après 15 minutes sans trafic et réveil pouvant prendre environ une minute. Deux API gratuites consomment les heures gratuites de l'espace. Kafka privé et son disque restent payants. Voir la [documentation Render](https://render.com/docs/free).
+**Limites de l'offre gratuite Render :** un seul PostgreSQL gratuit par espace, expiration de cette base après 30 jours, mise en veille des services web gratuits après 15 minutes sans trafic et réveil pouvant prendre environ une minute. Deux API gratuites consomment les heures gratuites de l'espace. Kafka privé et son disque restent payants. Au tarif affiché lors de la préparation : **7 $/mois** pour le petit service privé et **0,25 $/Go/mois** pour le disque, facturés au prorata ; contrôler le total dans Render avant de valider. Voir la [documentation Render](https://render.com/docs/free).
 
 Le projet conserve la logique Kafka. Toute alternative sans Kafka changerait la confirmation de paiement et doit être décidée explicitement pour cet exercice.
 
