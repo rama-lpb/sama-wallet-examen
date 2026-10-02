@@ -4,7 +4,7 @@ Le backend Spring Boot est dans `Projet_wallet-main/` et l'application Flutter d
 
 ## Voir la démo sur cet ordinateur
 
-Lancer `bash scripts/start-demo.sh`, puis ouvrir **http://localhost:8080**. Ce serveur local sert le front et relaie `/wallet/` vers le port 8091 et `/services/` vers le port 8092. Si vous lancez Flutter avec `flutter run -d chrome` sur un autre port, ce relais n'existe pas : la page s'affiche mais la connexion échoue. Dans ce cas, utiliser l'URL 8080 ou renseigner les deux adresses API dans les paramètres du formulaire.
+Ouvrir **http://localhost:8080** : sur cette machine, le site Flutter est servi par le conteneur local `sama-wallet-web-local` et les deux API Java tournent déjà. Après un redémarrage complet, relancer `bash scripts/start-demo.sh`. Ce serveur local sert le front et relaie `/wallet/` vers le port 8091 et `/services/` vers le port 8092. Si vous lancez Flutter avec `flutter run -d chrome` sur un autre port, ce relais n'existe pas : la page s'affiche mais la connexion échoue. Dans ce cas, utiliser l'URL 8080 ou renseigner les deux adresses API dans les paramètres du formulaire.
 
 Le compte créé lors de la validation initiale est **+221778080432**, PIN **1234**, si les volumes PostgreSQL locaux n'ont pas été supprimés. Les montants sont fictifs.
 
