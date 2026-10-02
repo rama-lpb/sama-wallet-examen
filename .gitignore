@@ -1,0 +1,8 @@
+.demo/
+deploy/.env
+**/target/
+.agents/
+.codex/
+*.log
+**/.env
+**/.env.*

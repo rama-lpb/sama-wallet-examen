@@ -1,0 +1,8 @@
+.git
+.demo
+**/.dart_tool
+**/.gradle
+**/build
+!wallet_mobile/build
+wallet_mobile/build/*
+!wallet_mobile/build/web

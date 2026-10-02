@@ -1,0 +1,85 @@
+# Démo avec le parcours Kafka original. Le service Kafka privé et son disque sont payants.
+databases:
+  - name: sama-wallet-db
+    plan: free
+    databaseName: sama_wallet
+    user: sama_wallet
+    region: frankfurt
+services:
+  - type: pserv
+    name: sama-wallet-kafka
+    runtime: docker
+    plan: 0.5c-512mb
+    region: frankfurt
+    dockerfilePath: deploy/render-kafka.Dockerfile
+    dockerContext: .
+    disk:
+      name: kafka-data
+      mountPath: /var/lib/kafka/data
+      sizeGB: 1
+  - type: web
+    name: sama-wallet-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: deploy/render-wallet.Dockerfile
+    dockerContext: .
+    healthCheckPath: /v3/api-docs
+    envVars:
+      - key: DB_HOST
+        fromDatabase: {name: sama-wallet-db, property: host}
+      - key: DB_PORT
+        fromDatabase: {name: sama-wallet-db, property: port}
+      - key: DB_NAME
+        fromDatabase: {name: sama-wallet-db, property: database}
+      - key: DB_USER
+        fromDatabase: {name: sama-wallet-db, property: user}
+      - key: DB_PASSWORD
+        fromDatabase: {name: sama-wallet-db, property: password}
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: SPRING_KAFKA_BOOTSTRAP_SERVERS
+        fromService: {name: sama-wallet-kafka, type: pserv, property: hostport}
+      - key: APP_CORS_ORIGINS
+        fromService: {name: sama-wallet-mobile, type: web, envVarKey: RENDER_EXTERNAL_URL}
+  - type: web
+    name: sama-prestations-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: deploy/render-prestations.Dockerfile
+    dockerContext: .
+    healthCheckPath: /v3/api-docs
+    envVars:
+      - key: DB_HOST
+        fromDatabase: {name: sama-wallet-db, property: host}
+      - key: DB_PORT
+        fromDatabase: {name: sama-wallet-db, property: port}
+      - key: DB_NAME
+        fromDatabase: {name: sama-wallet-db, property: database}
+      - key: DB_USER
+        fromDatabase: {name: sama-wallet-db, property: user}
+      - key: DB_PASSWORD
+        fromDatabase: {name: sama-wallet-db, property: password}
+      - key: APP_JWT_SECRET
+        fromService: {name: sama-wallet-api, type: web, envVarKey: APP_JWT_SECRET}
+      - key: APP_WALLET_BASE_URL
+        fromService: {name: sama-wallet-api, type: web, envVarKey: RENDER_EXTERNAL_URL}
+      - key: SPRING_KAFKA_BOOTSTRAP_SERVERS
+        fromService: {name: sama-wallet-kafka, type: pserv, property: hostport}
+      - key: APP_CORS_ORIGINS
+        fromService: {name: sama-wallet-mobile, type: web, envVarKey: RENDER_EXTERNAL_URL}
+  - type: web
+    name: sama-wallet-mobile
+    runtime: static
+    buildCommand: python3 scripts/build_render_config.py
+    staticPublishPath: deploy/render-web
+    envVars:
+      - key: WALLET_PUBLIC_URL
+        fromService: {name: sama-wallet-api, type: web, envVarKey: RENDER_EXTERNAL_URL}
+      - key: SERVICE_PUBLIC_URL
+        fromService: {name: sama-prestations-api, type: web, envVarKey: RENDER_EXTERNAL_URL}
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

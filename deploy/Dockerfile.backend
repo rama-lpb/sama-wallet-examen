@@ -1,0 +1,5 @@
+FROM eclipse-temurin:17-jre
+ARG SERVICE
+WORKDIR /app
+COPY Projet_wallet-main/${SERVICE}/target/${SERVICE}-0.0.1-SNAPSHOT.jar /app/app.jar
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
